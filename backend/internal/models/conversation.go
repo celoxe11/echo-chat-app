@@ -2,16 +2,8 @@ package models
 
 import (
 	"time"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
-
-
-// ReadReceipt tracks who has read a message
-type ReadReceipt struct {
-	UserID uint      `bson:"user_id" json:"user_id"`
-	ReadAt time.Time `bson:"read_at" json:"read_at"`
-}
 
 // Conversation represents a conversation summary (for quick lookups)
 // This is useful for displaying conversation lists
@@ -34,11 +26,6 @@ type Conversation struct {
 	// Timestamps
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
-}
-
-// CollectionName returns the MongoDB collection name for ChatMessage
-func (ChatMessage) CollectionName() string {
-	return "chat_messages"
 }
 
 // CollectionName returns the MongoDB collection name for Conversation

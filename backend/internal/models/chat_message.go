@@ -49,3 +49,14 @@ type Attachment struct {
 	MimeType  string `bson:"mime_type" json:"mime_type"`
 	Thumbnail string `bson:"thumbnail,omitempty" json:"thumbnail,omitempty"`
 }
+
+// ReadReceipt tracks who has read a message
+type ReadReceipt struct {
+	UserID uint      `bson:"user_id" json:"user_id"`
+	ReadAt time.Time `bson:"read_at" json:"read_at"`
+}
+
+// CollectionName returns the MongoDB collection name for ChatMessage
+func (ChatMessage) CollectionName() string {
+	return "chat_messages"
+}

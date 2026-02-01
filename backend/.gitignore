@@ -1,0 +1,34 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+main
+
+# Directories
+/vendor/
+/tmp/
+.idea/
+.vscode/
+bin/
+dist/
+
+# Environment variables
+.env
+.env.local
+.env.*
+!.env.example
+
+# OS-specific
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Go workspace
+go.work
+
+# Air binary (hot reload)
+/tmp/

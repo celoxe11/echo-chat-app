@@ -9,22 +9,19 @@ This backend implements a **Polyglot Persistence** architecture using multiple d
 ## 📁 Project Structure
 
 ```
-backend/
-├── config/
-│   ├── database.go      # Database connections (MySQL, MongoDB, Redis)
-│   ├── migrations.go    # MySQL auto-migration
-│   └── cache.go         # Redis cache service
-├── models/
-│   ├── mysql_models.go  # MySQL models (User, Group, Friendship)
-│   └── mongo_models.go  # MongoDB models (ChatMessage, Conversation)
-├── controllers/
-│   ├── user_controller.go     # User & friend operations
-│   └── message_controller.go  # Message operations
-├── routes/
-│   └── routes.go        # API routes (TODO)
-├── middlewares/
-│   └── auth.go          # Authentication middleware (TODO)
-└── main.go              # Application entry point
+backend
+├── internal/
+│   ├── delivery/
+│   │   └── http/
+│   │       ├── controller/   # Controller (Terima input, panggil usecase)
+│   │       ├── middleware/   # Penjaga pintu (Auth, Log, dll)
+│   │       └── router/       # Definisi rute API
+│   ├── usecase/              # Business Logic (Aturan main aplikasi)
+│   ├── repository/           # Data Access (Query MongoDB/BSON)
+│   └── models/               # Struct data & Interface (Kontrak)
+├── config/                   # Database & Env loading
+└── main.go                   # Entry point & Dependency Injection 
+└── go.mod
 ```
 
 ## 🗄️ Database Architecture

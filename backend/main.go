@@ -2,6 +2,7 @@ package main
 
 import (
 	"echo-chat-app-backend/config"
+	"echo-chat-app-backend/internal/delivery/routes"
 	"log"
 	"os"
 	"os/signal"
@@ -15,9 +16,12 @@ func main() {
 	if err := config.InitDatabases(); err != nil {
 		log.Fatalf("Failed to initialize databases: %v", err)
 	}
-
-	// Setup graceful shutdown
 	defer config.CloseDatabases()
+
+	// Initialize Firebase
+	if err := config.InitFirebase(); err != nil {
+		log.Fatal(err)
+	}
 
 	// Initialize Gin router
 	router := gin.Default()
@@ -35,14 +39,7 @@ func main() {
 	})
 
 	// TODO: Add your routes here
-	// Example:
-	// api := router.Group("/api/v1")
-	// {
-	//     api.POST("/users", controllers.CreateUser)
-	//     api.GET("/users/:id", controllers.GetUser)
-	//     api.POST("/messages", controllers.SendMessage)
-	//     api.GET("/messages", controllers.GetMessages)
-	// }
+	r := routes.SetupRouter(config.DB.MySQL, config.FirebaseAuth)
 
 	// Start server
 	port := os.Getenv("PORT")
@@ -62,7 +59,7 @@ func main() {
 	}()
 
 	log.Printf("Server starting on port %s", port)
-	if err := router.Run(":" + port); err != nil {
+	if err := r.Run(":" + port); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }

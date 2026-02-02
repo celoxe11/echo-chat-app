@@ -1,12 +1,15 @@
 package middlewares
 
 import (
+	"echo-chat-app-backend/internal/models"
+	"strings"
+
 	"firebase.google.com/go/v4/auth"
 	"github.com/gin-gonic/gin"
-	"strings"
+	"gorm.io/gorm"
 )
 
-func AuthMiddleware(authClient *auth.Client) gin.HandlerFunc {
+func AuthMiddleware(mysqlDB *gorm.DB, authClient *auth.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 1. Ambil header Authorization
 		authHeader := c.GetHeader("Authorization")
@@ -31,7 +34,21 @@ func AuthMiddleware(authClient *auth.Client) gin.HandlerFunc {
 			return
 		}
 
-		// 5. Simpan informasi user ke context
+		// 5. Cek apakah email ada di token
+		if token.Claims["email"] == nil {
+			c.JSON(401, gin.H{"error": "Email not found in token"})
+			return
+		}
+		// cari user di database
+		user := models.User{}
+		err = mysqlDB.Where("email = ?", token.Claims["email"]).First(&user).Error
+		if err != nil {
+			c.JSON(401, gin.H{"error": "User not found"})
+			return
+		}
+
+		// 6. Simpan informasi user ke context
+		c.Set("id", user.ID)
 		c.Set("email", token.Claims["email"])
 		c.Set("firebase_uid", token.UID)
 		// tambahkan informasi lain sesuai kebutuhan

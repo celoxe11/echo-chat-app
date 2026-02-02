@@ -8,7 +8,7 @@ import (
 // User represents a user in the system (stored in MySQL)
 type User struct {
 	ID        uint           `gorm:"primaryKey" json:"id"`
-	Username  string         `gorm:"uniqueIndex;not null;size:50" json:"username"`
+	FirebaseUID string       `gorm:"uniqueIndex;not null;size:100" json:"firebase_uid"`
 	Email     string         `gorm:"uniqueIndex;not null;size:100" json:"email"`
 	Password  string         `gorm:"not null" json:"-"` // "-" means don't include in JSON
 	FullName  string         `gorm:"size:100" json:"full_name"`

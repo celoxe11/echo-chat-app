@@ -1,10 +1,9 @@
 package config
 
 import (
+	"os"
 	"context"
 	"fmt"
-	"os"
-
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/auth"
 	"google.golang.org/api/option"
@@ -42,11 +41,11 @@ func InitFirebase() error {
         return fmt.Errorf("error initializing app: %v", err)
     }
 
-    client, err := app.Auth(ctx)
-    if err != nil {
-        return fmt.Errorf("error getting Auth client: %v", err)
-    }
+	client, err := app.Auth(context.Background())
+	if err != nil {
+		return fmt.Errorf("error getting Auth client: %v", err)
+	}
 
-    FirebaseAuth = client
-    return nil
+	FirebaseAuth = client
+	return nil
 }

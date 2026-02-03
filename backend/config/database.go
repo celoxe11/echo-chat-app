@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v8"
-	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"gorm.io/driver/mysql"
@@ -51,9 +50,6 @@ func InitDatabases() error {
 
 // initMySQL initializes MySQL connection using GORM
 func initMySQL() error {
-	// Load .env file
-	godotenv.Load()
-
 	user := os.Getenv("MYSQL_USER")
 	password := os.Getenv("MYSQL_PASSWORD")
 	host := os.Getenv("MYSQL_HOST")
@@ -89,8 +85,6 @@ func initMySQL() error {
 
 // initMongoDB initializes MongoDB connection
 func initMongoDB() error {
-	godotenv.Load()
-
 	uri := os.Getenv("MONGODB_URI")
 	dbName := os.Getenv("MONGODB_DATABASE")
 
@@ -115,8 +109,6 @@ func initMongoDB() error {
 
 // initRedis initializes Redis connection
 func initRedis() error {
-	godotenv.Load()
-
 	addr := os.Getenv("REDIS_ADDR")
 	password := os.Getenv("REDIS_PASSWORD")
 	dbStr := os.Getenv("REDIS_DB")

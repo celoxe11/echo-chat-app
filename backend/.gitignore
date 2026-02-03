@@ -32,3 +32,11 @@ go.work
 
 # Air binary (hot reload)
 /tmp/
+
+# Firebase logs and temporary files
+firebase-debug.log
+.firebase/
+
+# Firebase keys and secrets
+serviceAccountKey.json
+*.local.json

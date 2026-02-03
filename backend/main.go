@@ -9,9 +9,15 @@ import (
 	"syscall"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// Load .env file
+	if err := godotenv.Load(); err != nil {
+        log.Println("No .env file found, using system environment variables")
+    }
+
 	// Initialize all databases (MySQL, MongoDB, Redis)
 	if err := config.InitDatabases(); err != nil {
 		log.Fatalf("Failed to initialize databases: %v", err)

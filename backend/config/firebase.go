@@ -3,6 +3,8 @@ package config
 import (
 	"context"
 	"fmt"
+	"os"
+
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/auth"
 	"google.golang.org/api/option"
@@ -11,18 +13,40 @@ import (
 var FirebaseAuth *auth.Client
 
 func InitFirebase() error {
-	// Ganti dengan path file json service account kamu
-	opt := option.WithServiceAccountFile("serviceAccountKey.json")
-	app, err := firebase.NewApp(context.Background(), nil, opt)
-	if err != nil {
-		return fmt.Errorf("error initializing app: %v", err)
-	}
+    ctx := context.Background()
+    var app *firebase.App
+    var err error
 
-	client, err := app.Auth(context.Background())
-	if err != nil {
-		return fmt.Errorf("error getting Auth client: %v", err)
-	}
+    // 1. Cek apakah sedang menggunakan Emulator (untuk local development)
+    emulatorHost := os.Getenv("FIREBASE_AUTH_EMULATOR_HOST")
+    
+    if emulatorHost != "" {
+        // Jika emulator aktif, kita inisialisasi tanpa file key
+        app, err = firebase.NewApp(ctx, &firebase.Config{ProjectID: "your-project-id"})
+    } else {
+        // 2. Jika tidak ada emulator, cari path file JSON dari .env
+        serviceAccountPath := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
+        
+        if serviceAccountPath != "" {
+            // Gunakan file JSON jika path tersedia
+            opt := option.WithServiceAccountFile(serviceAccountPath)
+            app, err = firebase.NewApp(ctx, nil, opt)
+        } else {
+            // 3. Mode Production Sejati (Google Cloud Run/App Engine)
+            // Di server Google, kita tidak butuh file JSON sama sekali
+            app, err = firebase.NewApp(ctx, nil)
+        }
+    }
 
-	FirebaseAuth = client
-	return nil
+    if err != nil {
+        return fmt.Errorf("error initializing app: %v", err)
+    }
+
+    client, err := app.Auth(ctx)
+    if err != nil {
+        return fmt.Errorf("error getting Auth client: %v", err)
+    }
+
+    FirebaseAuth = client
+    return nil
 }

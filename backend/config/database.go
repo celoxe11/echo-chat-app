@@ -4,9 +4,12 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
+	"strconv"
 	"time"
 
 	"github.com/go-redis/redis/v8"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"gorm.io/driver/mysql"
@@ -48,8 +51,14 @@ func InitDatabases() error {
 
 // initMySQL initializes MySQL connection using GORM
 func initMySQL() error {
-	// TODO: Move these to environment variables
-	dsn := "root:password@tcp(localhost:3306)/echo_chat?charset=utf8mb4&parseTime=True&loc=Local"
+	// Load .env file
+	godotenv.Load()
+
+	user := os.Getenv("MYSQL_USER")
+	password := os.Getenv("MYSQL_PASSWORD")
+	host := os.Getenv("MYSQL_HOST")
+	database := os.Getenv("MYSQL_DATABASE")
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, database)
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
@@ -80,9 +89,10 @@ func initMySQL() error {
 
 // initMongoDB initializes MongoDB connection
 func initMongoDB() error {
-	// TODO: Move these to environment variables
-	uri := "mongodb://localhost:27017"
-	dbName := "echo_chat"
+	godotenv.Load()
+
+	uri := os.Getenv("MONGODB_URI")
+	dbName := os.Getenv("MONGODB_DATABASE")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -105,11 +115,24 @@ func initMongoDB() error {
 
 // initRedis initializes Redis connection
 func initRedis() error {
-	// TODO: Move these to environment variables
+	godotenv.Load()
+
+	addr := os.Getenv("REDIS_ADDR")
+	password := os.Getenv("REDIS_PASSWORD")
+	dbStr := os.Getenv("REDIS_DB")
+	db := 0
+	if dbStr != "" {
+		var err error
+		db, err = strconv.Atoi(dbStr)
+		if err != nil {
+			return fmt.Errorf("invalid REDIS_DB value: %w", err)
+		}
+	}
+
 	client := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "", // no password set
-		DB:       0,  // use default DB
+		Addr:     addr,
+		Password: password,
+		DB:       db,
 		PoolSize: 10,
 	})
 

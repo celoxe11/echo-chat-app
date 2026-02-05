@@ -17,16 +17,20 @@ func NewAuthController(authUseCase *usecases.AuthUseCase) *AuthController {
 
 func (ac *AuthController) SyncUser(c *gin.Context) {
 	uid := c.GetString("firebase_uid")
-    email := c.GetString("email")
+	email := c.GetString("email")
+	name := c.GetString("name")
+	avatarURL := c.GetString("avatar_url")
 
-	if( uid == "" || email == "" ) {
+	if uid == "" || email == "" {
 		c.JSON(400, gin.H{"error": "Invalid user data"})
 		return
 	}
 
-	err := ac.authUseCase.SyncUser(uid, email)
+	user, err := ac.authUseCase.SyncUser(uid, email, name, avatarURL)
 	if err != nil {
-		c.JSON(500, gin.H{"error": "Failed to sync user"})
+		c.JSON(500, gin.H{"error": "Failed to sync user: " + err.Error()})
 		return
 	}
+
+	c.JSON(200, gin.H{"message": "User synced successfully", "user": user})
 }

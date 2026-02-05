@@ -51,7 +51,9 @@ func AuthMiddleware(mysqlDB *gorm.DB, authClient *auth.Client) gin.HandlerFunc {
 		c.Set("id", user.ID)
 		c.Set("email", token.Claims["email"])
 		c.Set("firebase_uid", token.UID)
-		// tambahkan informasi lain sesuai kebutuhan
+		c.Set("name", token.Claims["name"])
+		c.Set("username", token.Claims["username"])
+		c.Set("avatar_url", token.Claims["picture"])
 
 		c.Next()
 	}

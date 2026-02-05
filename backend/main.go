@@ -44,7 +44,6 @@ func main() {
 		})
 	})
 
-	// TODO: Add your routes here
 	r := routes.SetupRouter(config.DB.MySQL, config.FirebaseAuth)
 
 	// Start server

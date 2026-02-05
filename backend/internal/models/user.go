@@ -10,10 +10,11 @@ type User struct {
 	ID        uint           `gorm:"primaryKey" json:"id"`
 	FirebaseUID string       `gorm:"uniqueIndex;not null;size:100" json:"firebase_uid"`
 	Email     string         `gorm:"uniqueIndex;not null;size:100" json:"email"`
-	Password  string         `gorm:"not null" json:"-"` // "-" means don't include in JSON
 	FullName  string         `gorm:"size:100" json:"full_name"`
+	Username  string         `gorm:"size:100" json:"username"`
 	AvatarURL string         `gorm:"size:255" json:"avatar_url"`
 	Status    string         `gorm:"type:enum('online','offline','away');default:'offline'" json:"status"`
+	LastSeen  time.Time      `json:"last_seen"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`

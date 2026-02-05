@@ -21,10 +21,14 @@ func SetupRouter(mysqlDB *gorm.DB, firebaseAuth *auth.Client) *gin.Engine {
     authUseCase := usecases.NewAuthUseCase(authRepo)
 	authController := controllers.NewAuthController(authUseCase)
 
+	userRepo := repositories.NewUserRepository(firebaseAuth, mysqlDB)
+	userUseCase := usecases.NewUserUseCase(userRepo)
+	userController := controllers.NewUserController(userUseCase)
+
 	api := router.Group("/api")
 	{
 		SetupAuthRoutes(api, firebaseAuth, authController, mysqlDB)
-		SetupUserRoutes(api)
+		SetupUserRoutes(api, firebaseAuth, userController, mysqlDB)
 	}
 
 	return router

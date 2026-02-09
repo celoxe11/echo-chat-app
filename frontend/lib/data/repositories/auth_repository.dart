@@ -40,4 +40,8 @@ class AuthRepository {
   Future<void> signOut() async {
     await authService.signOut();
   }
+
+  Future<void> forgotPassword(String email) async {
+    await authService.forgotPassword(email);
+  }
 }

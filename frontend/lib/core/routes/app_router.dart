@@ -1,4 +1,5 @@
 import 'package:echo_chat_app_frontend/core/routes/app_routes.dart';
+import 'package:echo_chat_app_frontend/presentation/screens/forgot_password_screen.dart';
 import 'package:echo_chat_app_frontend/presentation/screens/login_screen.dart';
 import 'package:echo_chat_app_frontend/presentation/screens/register_screen.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,8 @@ class AppRouter {
         return _buildRoute(const LoginScreen());
       case AppRoutes.register:
         return _buildRoute(const RegisterScreen());
+      case AppRoutes.forgotPassword:  
+        return _buildRoute(const ForgotPasswordScreen());
 
       // case AppRoutes.chat:
       //   return _buildRoute(

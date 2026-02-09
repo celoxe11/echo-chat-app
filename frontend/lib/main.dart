@@ -9,11 +9,12 @@ import 'package:echo_chat_app_frontend/presentation/blocs/auth/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:echo_chat_app_frontend/core/config/firebase_config.dart';
 import 'package:echo_chat_app_frontend/core/routes/app_router.dart';
+import 'package:echo_chat_app_frontend/core/theme/app_theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  FirebaseConfig.initialize();
+  await FirebaseConfig.initialize();
 
   // initiate all services and repository here
   final authService = AuthService();
@@ -52,6 +53,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Echo',
       debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
       onGenerateRoute: AppRouter().onGenerateRoute,
       builder: (context, child) {
         return BlocListener<AuthBloc, AuthState>(

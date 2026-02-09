@@ -144,6 +144,29 @@ class AuthService {
     await _auth.signOut();
   }
 
+  Future<void> forgotPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } on auth.FirebaseAuthException catch (e, stackTrace) {
+      final message = _handleFirebaseAuthError(e);
+      dev.log(
+        'Error sending password reset email: $message',
+        name: 'AuthService',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      throw AuthException(message);
+    } catch (e, stackTrace) {
+      dev.log(
+        'Error sending password reset email',
+        name: 'AuthService',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      rethrow;
+    }
+  }
+
   String _handleFirebaseAuthError(auth.FirebaseAuthException e) {
     switch (e.code) {
       case 'weak-password':
